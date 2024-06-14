@@ -3,7 +3,6 @@ import { Button, Card, CardBody, CardFooter, CardHeader, Input } from '@nextui-o
 import Image from 'next/image';
 import React, { useState } from 'react'
 import { Architects_Daughter } from 'next/font/google';
-import { apiClient } from '@/lib';
 import { ADMIN_API_ROUTES } from '@/utils';
 import { useAppStore } from '@/store';
 import { useRouter } from 'next/navigation';
