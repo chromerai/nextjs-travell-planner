@@ -8,8 +8,8 @@ const AdminLayout = ({ children}: { children: React.ReactNode }) => {
             <Sidebar />
             <section className="flex-1 flex flex-col">
                 <div className='h-48 bg-[#0E1428] text-white flex justify-center flex-col px-10 gap-3'>
-                    <h1 className='text-5xl'>Dashboard</h1>
-                    <p>This is Palm&Peak's admin Dashboard</p>
+                    <h1 className='text-5xl'>Scape Data</h1>
+                    <p>The scape engine is powered by Bright Data</p>
                 </div>
                 {children}
             </section>
