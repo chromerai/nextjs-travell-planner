@@ -7,6 +7,7 @@ import { apiClient } from '@/lib';
 import { ADMIN_API_ROUTES } from '@/utils';
 import { useAppStore } from '@/store';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const AD = Architects_Daughter({
     weight: "400",
@@ -22,7 +23,7 @@ const login = () => {
 
     const handleLogin = async () => {
         try {
-        const response = await apiClient.post(ADMIN_API_ROUTES.LOGIN, {
+        const response = await axios.post(ADMIN_API_ROUTES.LOGIN, {
             email,
             password,
         });
