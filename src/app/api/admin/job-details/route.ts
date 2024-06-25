@@ -3,10 +3,12 @@ import { prisma } from "@/lib"
 
 export async function GET() {
     try {
-        const jobs = await prisma.jobs.findMany({ orderBy: { createdAt: 'desc' }});
-        const onGoingJobs = await prisma.jobs.findMany({ where: { isComplete: false }});
+        const jobs = await prisma.jobs.findMany({ orderBy: { createdAt: "desc" } });
+        const onGoingJobs = await prisma.jobs.findMany({ where: { isComplete: false },});
         return NextResponse.json(
-            {jobs, onGoingJobs: onGoingJobs?.length ?? 0,
+            {
+                jobs, 
+                onGoingJobs: onGoingJobs?.length ?? 0,
             },
             {status: 200}
         );
