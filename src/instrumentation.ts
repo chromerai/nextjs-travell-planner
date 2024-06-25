@@ -1,14 +1,84 @@
-import puppeteer from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
+import { startLocationScraping, startPackagescraping } from "./scraping";
 
 export const register =  async () => {
+    // console.log(process.env)
     if(process.env.NEXT_RUNTIME==="nodejs") {
         const { Worker } =  await import("bullmq");
         const { connection } = await import("@/lib");
-        const { jobsQueue } = await import("@/lib");
+        const { jobsQueue, prisma } = await import("@/lib");
+        const puppeteer  = await import("puppeteer");
+        const SBR_WS_ENDPOINT = 'wss://brd-customer-hl_fa1a66f4-zone-palm_peak:x9onxvz0ynw7@brd.superproxy.io:9222';
 
-        new Worker("JobsQueue", async (job)=>{
 
-            const browser = await puppeteer
+        new Worker(
+        "jobsQueue", 
+        async (job)=>{
+            let browser: undefined | Browser = undefined;
+            try {
+                // console.log(process.env)
+                browser = await puppeteer.connect({
+                browserWSEndpoint: SBR_WS_ENDPOINT,});
+
+                const page = await browser.newPage();
+                // console.log("before if", job.data)
+                if(job.data.jobType.type==="location") {
+                    console.log("Connected! Navigating to " + job.data.url)
+                    await page.goto(job.data.url, {timeout: 50000});
+                    console.log("Navigated! Scraping page content...");
+                    const packages = await startLocationScraping(page);
+                    await prisma.jobs.update({
+                        where:{id: job.data.id},
+                        data: {isComplete: true, status: "complete"}
+                    });
+                    for(const pkg of packages) {
+                        const jobCreated = await prisma.jobs.findFirst({
+                            where: {
+                                url: `https://packages.yatra.com/holidays/intl/details.htm?packageId=${pkg?.id}`,
+                            },
+                        });
+                        if (!jobCreated) {
+                            const job = await prisma.jobs.create({
+                                data: {
+                                    url: `https://packages.yatra.com/holidays/intl/details.htm?packageId=${pkg?.id}`,
+                                    jobType: {type: "package"},
+                                },
+                            });
+                            jobsQueue.add("package", {...job, packageDetails: pkg});
+                        }
+                    }
+                } else if(job.data.jobType.type==="package") {
+                    // Already scraped check
+                    console.log("Navigating to" + job.data.url)
+                    const alreadyScrapped = await prisma.trips.findUnique({
+                        where: { id: job.data.packageDetails.id}
+                    });
+
+                    if(!alreadyScrapped) {
+                        const pkg = await startPackagescraping(page, job.data.packageDetails);
+                        // await prisma.trips.create({data: pkg})
+                        // await prisma.jobs.update({
+                        //     where: {id: job.data.id},
+                        //     data: { isComplete: true, status: "complete"}
+                        // });
+                        console.log(pkg)
+                    }
+                    // Scrape the Package
+                    // Store the Package in trips model
+                    // Mark the job as complete
+                }
+
+            } catch (error) {
+                console.log(error);
+                await prisma.jobs.update({
+                where: { id: job.data.id },
+                data: {isComplete: true, status: "failed"},
+                });
+            } finally 
+            {
+                await browser?.close();
+                console.log("Broswer closed successfully")
+            }
         }, {
             connection, 
             concurrency:10, 

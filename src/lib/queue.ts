@@ -1,6 +1,6 @@
 
 import { Queue } from "bullmq";
-import {connection } from "./"
+import {connection } from "./redis"
 
 export const jobsQueue = new Queue(
     "jobsQueue", {
