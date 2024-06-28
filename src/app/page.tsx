@@ -1,8 +1,10 @@
+"use client";
+import { Search } from "@/components/client/home/search";
 import { Button } from "@nextui-org/react";
-import Image from "next/image";
 
 export default function Home() {
-  return (
-   <Button>Click me</Button>
-  );
+  return <div className="max-w-[100vw] overflow-x-hidden">
+    <Search />
+
+  </div>
 }
