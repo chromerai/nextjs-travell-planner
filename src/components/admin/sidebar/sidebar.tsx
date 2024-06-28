@@ -81,7 +81,7 @@ const Sidebar = () => {
                     className="cursor-pointer" 
                     onClick={() => router.push("/admin/dashboard")}
                     />
-                    <span className="3xl uppercase font-medium italic">
+                    <span className="text-3xl uppercase font-medium italic">
                         <span className={AD.className}>Palm&Peaks</span>
                     </span>
                 </div>
