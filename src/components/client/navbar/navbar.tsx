@@ -14,7 +14,7 @@ const AD = Architects_Daughter({
 });
 
 
-const Navbar = () => {
+const Navbar = ({onOpen}: { onOpen : () => void}) => {
     const router = useRouter();
     const { userInfo } = useAppStore();
     const pathname = usePathname();
@@ -84,12 +84,13 @@ const Navbar = () => {
                     color="secondary"
                     variant="flat"
                     className='text-purple-500'
+                    onPress={onOpen}
                     >
                         Login
                     </Button>
                 </NavbarItem>
                 <NavbarItem>
-                    <Button color="danger" variant="flat">
+                    <Button color="danger" variant="flat" onPress={onOpen}>
                         Sign Up
                     </Button>
                 </NavbarItem>
