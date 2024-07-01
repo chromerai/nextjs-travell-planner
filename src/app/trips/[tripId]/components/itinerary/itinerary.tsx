@@ -3,7 +3,6 @@ import { DetailedItineraryType } from '@/types/trips'
 import { Card, CardBody, CardHeader } from '@nextui-org/react'
 
 const Itinerary = ({ data }: {data: DetailedItineraryType[] }) => {
-    console.log({data})
   return (
     <div>
       <div className="flex flex-col gap-10 items-center justify-center mt-10 relative">

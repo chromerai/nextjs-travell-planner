@@ -74,7 +74,20 @@ const Trips = ({params: { tripId} }: {params: {tripId: string}}) => {
 
     };
 
-    const BookTrip = async () => {};
+    const BookTrip = async () => {
+        const isoDate = date.toISOString();
+
+        const response = await axios.post(USER_API_ROUTES.CREATE_BOOKING, {
+            bookingId: tripData?.id,
+            bookingType: "trips",
+            userId: userInfo?.id,
+            taxes: (tripData?.price ?? 0.0)* 6.2 / 100,
+            date: isoDate,
+        });
+        if (response.data.client_secret) {
+                router.push(`/checkout?client_secret=${response.data.client_secret}`);
+            }
+    }
 
   return (
     <div>
@@ -258,7 +271,7 @@ const Trips = ({params: { tripId} }: {params: {tripId: string}}) => {
                             <span>{CurrencySymbols[selectedCurrency]} {convertToSelectedCurrency(tripData.price + tripData.price * 6.2 / 100)}</span>
                         </li>
                     </ul>
-                    <Button color="primary" size="lg" className="rounded-full" onClick={()=> userInfo && BookTrip()}>
+                    <Button color="primary" size="lg" className="rounded-full" onClick={() => {userInfo && BookTrip()}}>
                         {userInfo ? "Book Trip" : "Login to Book Trip"}
                     </Button>
                 </div>

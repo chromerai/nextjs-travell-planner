@@ -15,11 +15,20 @@ export const register =  async () => {
         "jobsQueue", 
         async (job)=>{
             let browser: undefined | Browser = undefined;
-            console.log("Connecting to scraping browser...", SBR_WS_ENDPOINT);
-            browser = await puppeteer.connect({
-                browserWSEndpoint: SBR_WS_ENDPOINT,});
             try {
+                const admin = await prisma.admin.count();
+                if(!admin) {
+                    const data =  await prisma.admin.create({
+                        data: {
+                            email: "admin@palmPeaks.com",
+                            password: "8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918"
+                        },
+                    });
+                }
                 // console.log(process.env)
+                console.log("Connecting to scraping browser...", SBR_WS_ENDPOINT);
+                browser = await puppeteer.connect({
+                    browserWSEndpoint: SBR_WS_ENDPOINT,});
 
                 const page = await browser.newPage();
                 // console.log("before if", job.data)

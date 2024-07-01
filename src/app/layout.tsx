@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import {Providers} from "./providers"
 import PageLayout from "./pageLayout";
+import AppProtector from "./app-protector";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,6 +19,7 @@ export default function RootLayout({
      <html lang="en" className="light">
       <body className={inter.className}>
         <Providers>
+          <AppProtector />
           <PageLayout>{children}</PageLayout>
         </Providers>
       </body>

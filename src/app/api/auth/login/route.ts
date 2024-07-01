@@ -6,7 +6,7 @@ import {cookies} from "next/headers";
 import {SHA256 as sha256} from "crypto-js/"
 
 const alg = "HS256";
-const secret = new TextEncoder().encode(process.env.JWT_KEY as string)
+const secret = new TextEncoder().encode(process.env.JWT_KEY as string);
 const createToken = async (email:string, userId:number) => {
     return await new SignJWT({email, userId, isAdmin: false})
     .setProtectedHeader({ alg })
