@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { Button, Link, NavbarBrand, NavbarContent, NavbarItem, Navbar as NextNavbar } from "@nextui-org/react";
+import { Avatar, Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Link, NavbarBrand, NavbarContent, NavbarItem, Navbar as NextNavbar } from "@nextui-org/react";
 import { Architects_Daughter } from 'next/font/google';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAppStore } from '@/store';
@@ -79,21 +79,60 @@ const Navbar = ({onOpen}: { onOpen : () => void}) => {
                 </NavbarItem>
             </NavbarContent>
             <NavbarContent justify="end">
-                <NavbarItem className="hidden lg:flex">
-                    <Button 
-                    color="secondary"
-                    variant="flat"
-                    className='text-purple-500'
-                    onPress={onOpen}
-                    >
-                        Login
-                    </Button>
-                </NavbarItem>
-                <NavbarItem>
-                    <Button color="danger" variant="flat" onPress={onOpen}>
-                        Sign Up
-                    </Button>
-                </NavbarItem>
+                {
+                    userInfo && (
+                    <>
+                    <Dropdown placement="bottom-end">
+                        <DropdownTrigger>
+                            <Avatar
+                                isBordered
+                                as="button"
+                                className="transition-transform"
+                                color="secondary"
+                                size="md"
+                                classNames={{
+                                    base:"bg-gradient-to-br from-[#ff578f] to-[#945bff]",
+                                    icon:"text-black-80",
+                                }}
+                            />
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Profile Actions" variant="flat" onAction={key=>router.push(key as string)}>
+                            <DropdownItem key="profile" className="h-14 gap-2">
+                                <p className="font-semibold">Signed in as</p>
+                                <p className="font-semibold">{userInfo.email}</p>
+                            </DropdownItem>
+                            <DropdownItem key="/settings">My Settings</DropdownItem>
+                            <DropdownItem key="/my-bookings">My Bookings</DropdownItem>
+                            <DropdownItem key="/wishlists">Wishlist</DropdownItem>
+                            <DropdownItem key="/logout" color="danger">
+                                    Log Out
+                            </DropdownItem>
+                        </DropdownMenu>
+                    </Dropdown>
+                    </>
+                    )
+                }
+                {
+                    !userInfo && (
+                    <>
+                    <NavbarItem className="hidden lg:flex">
+                        <Button 
+                        color="secondary"
+                        variant="flat"
+                        className='text-purple-500'
+                        onPress={onOpen}
+                        >
+                            Login
+                        </Button>
+                    </NavbarItem>
+                    <NavbarItem>
+                        <Button color="danger" variant="flat" onPress={onOpen}>
+                            Sign Up
+                        </Button>
+                    </NavbarItem>
+                    </>
+                    )
+                }
             </NavbarContent>
         </div>
     </NextNavbar>

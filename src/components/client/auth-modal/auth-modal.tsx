@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { Architects_Daughter } from 'next/font/google';
 import Image from 'next/image';
+import { USER_API_ROUTES } from '@/utils/api-routes';
+import axios from 'axios';
 
 const AD = Architects_Daughter({
   weight: "400",
@@ -18,20 +20,52 @@ const AuthModal = ({isOpen, onOpenChange}: {
 
     const[modalType, setModalType] = useState("login");
     const router = useRouter();
-    const {userInfo} = useAppStore();
+    const {setUserInfo} = useAppStore();
 
     const[firstName, setFirstName] = useState("");
     const[lastName, setLastName] = useState("");
     const[email, setEmail] = useState("");
     const[password, setPassword] = useState("");
 
-    const handleSignup = async () => {};
+    const handleSignup = async (onClose: () => void) => {
+      const response = await axios.post(USER_API_ROUTES.SIGNUP, {
+        firstName,
+        lastName,
+        email,
+        password,
+      });
+      if(response.data.userInfo) {
+        setUserInfo(response.data.userInfo)
+        onClose();
+        setEmail("");
+        setPassword("");
+        setFirstName("");
+        setLastName("");
+      }
+    };
 
-    const handleLogin = async () => {};
+    const handleLogin = async (onClose: () => void) => {
+      const response = await axios.post(USER_API_ROUTES.LOGIN, {
+        email,
+        password,
+      });
+      if(response.data.userInfo) {
+        setUserInfo(response.data.userInfo)
+        onClose();
+        setEmail("");
+        setPassword("");
+        setFirstName("");
+        setLastName("");
+      }
+    };
 
     const switchModalType = () => {
       if(modalType==="login") setModalType("signup");
       else setModalType("login");
+      setEmail("");
+      setPassword("");
+      setFirstName("");
+      setLastName("");
     };
 
 

@@ -27,6 +27,7 @@ model User {
   lastName String
   password String
   createdAt DateTime @default(now())
+  bookings Bookings[]
 }
 
 model Jobs {
@@ -53,4 +54,17 @@ model Trips {
   description String
   packageItinerary Json
   scrappedOn DateTime @default(now())
+}
+
+model Bookings {
+  id Int @default(autoincrement()) @id
+  createdAt DateTime @default(now())
+  date DateTime
+  bookingType String
+  bookingTypeId String
+  userId Int
+  totalAmount Float
+  paymentIntent String @unique
+  isCompleted Boolean @default(false)
+  user User @relation(fields: [userId], references: [id])
 }
